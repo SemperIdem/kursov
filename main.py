@@ -1,7 +1,9 @@
 import sys
 
 import matplotlib
-import math
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+from matplotlib import cm
 from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QLineEdit
@@ -24,7 +26,7 @@ class MyMplCanvas(FigureCanvas):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
         # We want the axes cleared every time plot() is called
-        fig.subplots_adjust(bottom=0.20, left=0.20)
+        fig.subplots_adjust(left=0.2, bottom=0.2)
         self.axes.set_xlabel("theta")
         self.axes.set_ylabel("u(t,theta)")
 
@@ -90,6 +92,15 @@ class ApplicationWindow(QMainWindow):
 
         self.main_linear.addWidget(self.sc)
 
+        hBox = QHBoxLayout(self.main_widget)
+        self.t_label = QLabel(self.main_widget)
+        self.e_label = QLabel(self.main_widget)
+        self.t_label.setText("Теоритическая оценка ряда: ")
+        self.e_label.setText("Экспериментальная оценка ряда: ")
+        hBox.addWidget(self.t_label)
+        hBox.addWidget(self.e_label)
+        self.main_linear.addLayout(hBox)
+
         self.button = QPushButton('Rebuild', self)
         self.button.clicked.connect(self.repaint)
 
@@ -107,6 +118,10 @@ class ApplicationWindow(QMainWindow):
         eps = float(self.epsEditText.text())
         function = ComputeFunction(c, k, R, beta, t, eps)
         self.sc.redraw(function, t)
+
+        self.t_label.setText("Теоритическая оценка ряда: %d" % function.get_theory_limit())
+        self.e_label.setText("Экспериментальная оценка ряда: %d" % function.get_experimental_limit(1, 2))
+
         pass
 
     def add_edit_text(self, caption, edit_text, value=""):
