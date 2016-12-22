@@ -47,11 +47,11 @@ class MyStaticMplCanvas(MyMplCanvas):
     def compute_initial_figure(self):
         pass
 
-    def redraw(self, function):
-        t = arange(0.0, 7.0, 0.1)
+    def redraw(self, function,t):
+        ran = arange(0.0, 1.0, 0.1)
 
-        s = [function.function_u(x, 1) for x in t]
-        self.axes.plot(t, s)
+        s = [function.function_u(x, t) for x in ran]
+        self.axes.plot(ran, s)
         self.draw()
 
 
@@ -66,10 +66,10 @@ class ApplicationWindow(QMainWindow):
         self.main_linear = QVBoxLayout(self.main_widget)
 
         self.cEditText = QLineEdit(self.main_widget)
-        self.add_edit_text("c", self.cEditText , "2")
+        self.add_edit_text("c", self.cEditText , "1.5")
 
         self.kEditText = QLineEdit(self.main_widget)
-        self.add_edit_text("K", self.kEditText, "0.01")
+        self.add_edit_text("K", self.kEditText, "0.015")
 
         self.rEditText = QLineEdit(self.main_widget)
         self.add_edit_text("R", self.rEditText, "2")
@@ -77,11 +77,8 @@ class ApplicationWindow(QMainWindow):
         self.betaEditText = QLineEdit(self.main_widget)
         self.add_edit_text("Beta", self.betaEditText, "0.1")
 
-        self.epsEditText = QLineEdit(self.main_widget)
-        self.add_edit_text("eps", self.epsEditText, "1e-7")
-
         self.tEditText = QLineEdit(self.main_widget)
-        self.add_edit_text("t", self.tEditText, "1e-7")
+        self.add_edit_text("t", self.tEditText, "1")
 
         self.sc = MyStaticMplCanvas(self.main_widget, width=5, height=4, dpi=100)
 
@@ -100,10 +97,9 @@ class ApplicationWindow(QMainWindow):
         k = float(self.kEditText.text())
         R = float(self.rEditText.text())
         beta = float(self.betaEditText.text())
-        eps = float(self.epsEditText.text())
         t = float(self.tEditText.text())
-        function = ComputeFunction(c, k, R, beta, eps, t)
-        self.sc.redraw(function)
+        function = ComputeFunction(c, k, R, beta, t)
+        self.sc.redraw(function,t)
         pass
 
     def add_edit_text(self, caption, edit_text, value = ""):
