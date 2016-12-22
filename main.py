@@ -24,7 +24,9 @@ class MyMplCanvas(FigureCanvas):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
         # We want the axes cleared every time plot() is called
-        self.axes.hold(False)
+        fig.subplots_adjust(bottom=0.20, left=0.20)
+        self.axes.set_xlabel("theta")
+        self.axes.set_ylabel("u(t,theta)")
 
         self.compute_initial_figure()
 
