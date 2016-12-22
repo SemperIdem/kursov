@@ -1,6 +1,7 @@
 import sys
 
 import matplotlib
+import math
 from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QLineEdit
@@ -47,8 +48,8 @@ class MyStaticMplCanvas(MyMplCanvas):
     def compute_initial_figure(self):
         pass
 
-    def redraw(self, function,t):
-        ran = arange(0.0, 1.0, 0.1)
+    def redraw(self, function, t):
+        ran = arange(0.0, 3.14, 0.01)
 
         s = [function.function_u(x, t) for x in ran]
         self.axes.plot(ran, s)
@@ -66,7 +67,7 @@ class ApplicationWindow(QMainWindow):
         self.main_linear = QVBoxLayout(self.main_widget)
 
         self.cEditText = QLineEdit(self.main_widget)
-        self.add_edit_text("c", self.cEditText , "1.5")
+        self.add_edit_text("c", self.cEditText, "1.5")
 
         self.kEditText = QLineEdit(self.main_widget)
         self.add_edit_text("K", self.kEditText, "0.015")
@@ -76,6 +77,9 @@ class ApplicationWindow(QMainWindow):
 
         self.betaEditText = QLineEdit(self.main_widget)
         self.add_edit_text("Beta", self.betaEditText, "0.1")
+
+        self.epsEditText = QLineEdit(self.main_widget)
+        self.add_edit_text("Eps", self.epsEditText, "0.001")
 
         self.tEditText = QLineEdit(self.main_widget)
         self.add_edit_text("t", self.tEditText, "1")
@@ -98,11 +102,12 @@ class ApplicationWindow(QMainWindow):
         R = float(self.rEditText.text())
         beta = float(self.betaEditText.text())
         t = float(self.tEditText.text())
-        function = ComputeFunction(c, k, R, beta, t)
-        self.sc.redraw(function,t)
+        eps = float(self.epsEditText.text())
+        function = ComputeFunction(c, k, R, beta, t, eps)
+        self.sc.redraw(function, t)
         pass
 
-    def add_edit_text(self, caption, edit_text, value = ""):
+    def add_edit_text(self, caption, edit_text, value=""):
         edit_text.setText(value)
         hBox = QHBoxLayout(self.main_widget)
         label = QLabel(self.main_widget)
