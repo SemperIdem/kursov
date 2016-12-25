@@ -9,9 +9,9 @@ class FunctionP:
             return 1
         if n == 1:
             return x
-        self.cache[Value(n, x)] = ((2 * n - 1) * x * self.calculate(n - 1, x) - (n - 1) * self.calculate(n - 2,
-                                                                                                            x)) / n;
+        self.cache[Value(n, x)] = ((2 * n - 1) * x * self.calculate(n - 1, x) - (n - 1) * self.calculate(n - 2, x)) / n
         return self.cache[Value(n, x)]
+
 
 class Value(object):
     def __init__(self, x, y):

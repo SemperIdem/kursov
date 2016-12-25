@@ -1,9 +1,7 @@
 import sys
+import matplotlib.pyplot as plt
 
 import matplotlib
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
-from matplotlib import cm
 from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QLineEdit
@@ -23,17 +21,16 @@ class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
 
     def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        # We want the axes cleared every time plot() is called
-        fig.subplots_adjust(left=0.2, bottom=0.2)
+        self.fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = self.fig.add_subplot(111)
+        self.fig.subplots_adjust(left=0.2, bottom=0.2)
         self.axes.set_xlabel("theta")
         self.axes.set_ylabel("u(t,theta)")
 
         self.compute_initial_figure()
 
         #
-        FigureCanvas.__init__(self, fig)
+        FigureCanvas.__init__(self, self.fig)
         self.setParent(parent)
 
         FigureCanvas.setSizePolicy(self,
@@ -57,6 +54,10 @@ class MyStaticMplCanvas(MyMplCanvas):
 
         s = [function.function_u(x, t) for x in ran]
         self.axes.plot(ran, s)
+        self.draw()
+
+    def clear(self):
+        self.axes.clear()
         self.draw()
 
 
@@ -101,13 +102,21 @@ class ApplicationWindow(QMainWindow):
         hBox.addWidget(self.e_label)
         self.main_linear.addLayout(hBox)
 
+        self.clearAxes = QPushButton('Clear axes', self)
+        self.clearAxes.clicked.connect(self.clearFigure)
+
         self.button = QPushButton('Rebuild', self)
         self.button.clicked.connect(self.repaint)
 
+        self.main_linear.addWidget(self.clearAxes)
         self.main_linear.addWidget(self.button)
 
         self.main_widget.setFocus()
         self.setCentralWidget(self.main_widget)
+
+    def clearFigure(self):
+        self.sc.clear()
+
 
     def repaint(self):
         c = float(self.cEditText.text())
